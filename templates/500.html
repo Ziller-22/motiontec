@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Server Error - ZENO{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card bg-secondary">
+                <div class="card-body p-5">
+                    <i class="bi bi-exclamation-triangle display-1 text-danger mb-4"></i>
+                    <h1 class="display-4 mb-3">500</h1>
+                    <h4 class="mb-4">Internal Server Error</h4>
+                    <p class="text-muted mb-4">
+                        ZENO encountered an internal error. This might be temporary.
+                        Please try again in a moment.
+                    </p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="bi bi-house"></i> Go Home
+                        </a>
+                        <button class="btn btn-outline-light" onclick="location.reload()">
+                            <i class="bi bi-arrow-clockwise"></i> Retry
+                        </button>
+                    </div>
+                    
+                    <hr class="border-secondary my-4">
+                    
+                    <div class="text-start">
+                        <h6 class="text-primary">Troubleshooting Tips:</h6>
+                        <ul class="list-unstyled small text-muted">
+                            <li>• Check if Ollama is running: <code>ollama serve</code></li>
+                            <li>• Verify AI models are installed: <code>ollama list</code></li>
+                            <li>• Check application logs for details</li>
+                            <li>• Restart ZENO if the problem persists</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

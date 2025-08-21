@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row h-100">
+    <!-- Chat Interface -->
+    <div class="col-lg-8">
+        <div class="card bg-secondary h-100">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-chat-square-text"></i> Chat with ZENO
+                </h5>
+                <div class="btn-group" role="group">
+                    <button class="btn btn-outline-light btn-sm" id="voice-btn" title="Voice Input">
+                        <i class="bi bi-mic"></i>
+                    </button>
+                    <button class="btn btn-outline-light btn-sm" onclick="clearChat()" title="Clear Chat">
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="card-body d-flex flex-column p-0">
+                <!-- Chat Messages -->
+                <div class="flex-grow-1 overflow-auto" id="chat-messages" style="max-height: 60vh;">
+                    <div class="p-3">
+                        <div class="message-bubble assistant-message">
+                            <div class="d-flex align-items-start">
+                                <div class="avatar bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 32px; height: 32px;">
+                                    <i class="bi bi-robot text-white small"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="message-content bg-primary text-white rounded p-2">
+                                        <p class="mb-0">Hello! I'm ZENO, your personal AI assistant. I'm currently in <strong>{{ status.mode }}</strong> mode.</p>
+                                        <p class="mb-0 mt-1">How can I help you today?</p>
+                                    </div>
+                                    <small class="text-muted">Just now</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Input Area -->
+                <div class="border-top border-secondary p-3">
+                    <form id="chat-form" class="d-flex gap-2">
+                        <div class="flex-grow-1">
+                            <input type="text" class="form-control bg-dark text-light border-secondary" 
+                                   id="message-input" placeholder="Type your message..." autocomplete="off">
+                        </div>
+                        <button type="submit" class="btn btn-primary" id="send-btn">
+                            <i class="bi bi-send"></i>
+                        </button>
+                    </form>
+                    
+                    <!-- Voice Recording Indicator -->
+                    <div id="voice-recording" class="mt-2 text-center d-none">
+                        <div class="spinner-border spinner-border-sm text-danger me-2" role="status"></div>
+                        <span class="text-danger">Listening... Click to stop</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="row g-3">
+            <!-- Status Card -->
+            <div class="col-12">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-info-circle"></i> System Status
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <div class="status-indicator" id="ollama-status">
+                                        {% if status.model_status.ollama_available %}
+                                            <i class="bi bi-check-circle text-success fs-4"></i>
+                                            <div class="small">Ollama</div>
+                                        {% else %}
+                                            <i class="bi bi-x-circle text-danger fs-4"></i>
+                                            <div class="small">Ollama</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <div class="status-indicator">
+                                        {% if status.memory_enabled %}
+                                            <i class="bi bi-check-circle text-success fs-4"></i>
+                                            <div class="small">Memory</div>
+                                        {% else %}
+                                            <i class="bi bi-x-circle text-warning fs-4"></i>
+                                            <div class="small">Memory</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr class="border-secondary">
+                        
+                        <div class="small">
+                            <div class="d-flex justify-content-between">
+                                <span>Current Mode:</span>
+                                <span class="text-primary fw-bold">{{ status.mode|title }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mt-1">
+                                <span>PC Control:</span>
+                                <span class="{% if status.pc_control_enabled %}text-success{% else %}text-warning{% endif %}">
+                                    {{ "Enabled" if status.pc_control_enabled else "Disabled" }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Quick Commands -->
+            <div class="col-12">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-lightning"></i> Quick Commands
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-light btn-sm quick-command" 
+                                    data-command="What can you do?">
+                                <i class="bi bi-question-circle"></i> What can you do?
+                            </button>
+                            <button class="btn btn-outline-light btn-sm quick-command" 
+                                    data-command="Zeno, open notepad">
+                                <i class="bi bi-file-text"></i> Open Notepad
+                            </button>
+                            <button class="btn btn-outline-light btn-sm quick-command" 
+                                    data-command="Search for Python tutorials">
+                                <i class="bi bi-search"></i> Search Web
+                            </button>
+                            <button class="btn btn-outline-light btn-sm quick-command" 
+                                    data-command="Switch to control mode">
+                                <i class="bi bi-toggle-on"></i> Switch Mode
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Available Models -->
+            {% if status.model_status.local_models %}
+            <div class="col-12">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-cpu"></i> Available Models
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        {% for model in status.model_status.local_models %}
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-check-circle text-success me-2"></i>
+                            <code class="small">{{ model }}</code>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Help -->
+            <div class="col-12">
+                <div class="card bg-secondary">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-question-circle"></i> Help
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="small">
+                            <p class="mb-2"><strong>Voice Commands:</strong></p>
+                            <ul class="list-unstyled ps-3">
+                                <li>• Click the mic button to start/stop</li>
+                                <li>• Say "{{ config.WAKE_WORD }}" for system commands</li>
+                            </ul>
+                            
+                            <p class="mb-2 mt-3"><strong>Modes:</strong></p>
+                            <ul class="list-unstyled ps-3">
+                                <li>• <strong>Conversation:</strong> Natural chat</li>
+                                <li>• <strong>Control:</strong> PC commands</li>
+                                <li>• <strong>Utility:</strong> Multi-step tasks</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Initialize chat functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Focus on input
+    document.getElementById('message-input').focus();
+    
+    // Load initial status
+    loadSystemStatus();
+    
+    // Set up periodic status updates
+    setInterval(loadSystemStatus, 30000); // Update every 30 seconds
+});
+
+// Quick command handlers
+document.querySelectorAll('.quick-command').forEach(button => {
+    button.addEventListener('click', function() {
+        const command = this.dataset.command;
+        document.getElementById('message-input').value = command;
+        document.getElementById('chat-form').dispatchEvent(new Event('submit'));
+    });
+});
+</script>
+{% endblock %}

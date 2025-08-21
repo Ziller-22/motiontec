@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Page Not Found - ZENO{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="card bg-secondary">
+                <div class="card-body p-5">
+                    <i class="bi bi-robot display-1 text-primary mb-4"></i>
+                    <h1 class="display-4 mb-3">404</h1>
+                    <h4 class="mb-4">Page Not Found</h4>
+                    <p class="text-muted mb-4">
+                        ZENO couldn't find the page you're looking for. 
+                        It might have been moved or doesn't exist.
+                    </p>
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-center">
+                        <a href="{{ url_for('index') }}" class="btn btn-primary">
+                            <i class="bi bi-house"></i> Go Home
+                        </a>
+                        <button class="btn btn-outline-light" onclick="history.back()">
+                            <i class="bi bi-arrow-left"></i> Go Back
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
