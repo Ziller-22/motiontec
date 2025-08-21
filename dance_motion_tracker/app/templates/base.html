@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Dance Motion Tracker{% endblock %}</title>
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('main.index') }}">
+                <i class="fas fa-video me-2"></i>
+                Dance Motion Tracker
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('main.index') }}">
+                            <i class="fas fa-home me-1"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" onclick="showHelp()">
+                            <i class="fas fa-question-circle me-1"></i>Help
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="container-fluid py-4">
+        <!-- Alert Area -->
+        <div id="alertArea"></div>
+        
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-3 mt-5">
+        <div class="container text-center">
+            <p>&copy; 2024 Dance Motion Tracker. Built with MediaPipe, OpenCV, and Flask.</p>
+        </div>
+    </footer>
+    
+    <!-- Help Modal -->
+    <div class="modal fade" id="helpModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-question-circle me-2"></i>
+                        How to Use Dance Motion Tracker
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-upload me-2"></i>Step 1: Upload Video</h6>
+                            <p>Upload a dance video in MP4, AVI, MOV, or other supported formats. Best results with clear, well-lit videos.</p>
+                            
+                            <h6><i class="fas fa-cog me-2"></i>Step 2: Configure Processing</h6>
+                            <p>Choose your processing options:</p>
+                            <ul>
+                                <li>Apply smoothing to reduce jitter</li>
+                                <li>Select export formats (JSON, CSV, Blender)</li>
+                                <li>Enable overlay video creation</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-play me-2"></i>Step 3: Process</h6>
+                            <p>Click "Start Processing" to analyze the video and extract pose data using MediaPipe.</p>
+                            
+                            <h6><i class="fas fa-download me-2"></i>Step 4: Download Results</h6>
+                            <p>Download the processed data:</p>
+                            <ul>
+                                <li>Pose data (JSON/CSV)</li>
+                                <li>Blender-compatible files</li>
+                                <li>Video with pose overlay</li>
+                                <li>Analysis statistics</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <hr>
+                    
+                    <h6><i class="fas fa-lightbulb me-2"></i>Tips for Best Results</h6>
+                    <ul>
+                        <li>Use well-lit videos with clear visibility of the dancer</li>
+                        <li>Avoid cluttered backgrounds when possible</li>
+                        <li>Higher resolution videos (1080p) provide better accuracy</li>
+                        <li>Ensure the full body is visible in most frames</li>
+                    </ul>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Loading Modal -->
+    <div class="modal fade" id="loadingModal" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center p-4">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h5 id="loadingTitle">Processing...</h5>
+                    <p id="loadingMessage" class="text-muted">Please wait while we process your video.</p>
+                    <div class="progress mt-3">
+                        <div id="progressBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+                    </div>
+                    <small id="progressText" class="text-muted">0%</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

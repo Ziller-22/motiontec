@@ -1,0 +1,21 @@
+# GPU-specific dependencies for NVIDIA GTX 1050
+# Include all base requirements
+-r requirements.txt
+
+# PyTorch with CUDA support (for optional AI enhancements)
+torch>=2.2.0
+torchvision>=0.17.0
+torchaudio>=2.2.0
+
+# TensorFlow with GPU support (alternative to PyTorch)
+# tensorflow>=2.11.0
+
+# CUDA-accelerated OpenCV (optional, for better performance)
+# opencv-contrib-python>=4.11.0
+
+# Additional GPU utilities
+cupy-cuda11x>=12.0.0  # For CUDA 11.x
+# cupy-cuda12x>=12.0.0  # For CUDA 12.x (uncomment if using CUDA 12)
+
+# NVIDIA ML Python bindings
+nvidia-ml-py>=12.0.0
